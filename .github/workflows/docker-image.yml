@@ -26,7 +26,6 @@ env:
   GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
   GH_PKG_TOKEN: "${{ secrets.GH_PKG_TOKEN }}"
   GH_PKG_USER: "${{ vars.GH_PKG_USER }}"
-  GH_EMAIL: "${{ vars.GH_EMAIL }}"
   Registry: "ghcr.io"
 
 jobs:
@@ -61,7 +60,7 @@ jobs:
       #*************************************
       # Publishing images to GitHub Packages - https://docs.github.com/en/actions/publishing-packages/publishing-docker-images#publishing-images-to-github-packages
       #*************************************
-      
+
       # Extract metadata
       - name: Extract metadata (tags, labels) for Docker
         id: meta
