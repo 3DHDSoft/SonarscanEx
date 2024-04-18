@@ -1,0 +1,11 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Husky.Net - https://alirezanet.github.io/Husky.Net/guide/#features
+# pre-push - https://git-scm.com/docs/githooks#_pre_push
+
+echo
+echo '************'
+echo '* pre-push *'
+echo '************'
+echo

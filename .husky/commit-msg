@@ -1,0 +1,42 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Husky.Net - https://alirezanet.github.io/Husky.Net/guide/#features
+# commit-msg - https://git-scm.com/docs/githooks#_commit_msg
+
+## husky task runner examples -------------------
+## Note : for local installation use 'dotnet' prefix. e.g. 'dotnet husky'
+
+## run all tasks
+#husky run
+
+### run all tasks with group: 'group-name'
+#husky run --group group-name
+
+## run task with name: 'task-name'
+#husky run --name task-name
+
+## pass hook arguments to task
+#husky run --args "$1" "$2"
+
+## or put your custom commands -------------------
+#echo 'Husky.Net is awesome!'
+
+#dotnet husky run
+
+echo
+echo '**************'
+echo '* commit-msg *'
+echo '**************'
+
+echo Run commit-message-linter
+# dotnet husky exec .husky/csx/commit-lint.csx --args ${args} 
+dotnet husky run --name "commit-message-linter" --args "$1"
+
+# echo Run Clean Up Code
+# jb cleanupcode -p="Built-in: Full Cleanup" [Solution file name]
+#dotnet husky run --name "Clean Up Code" --args "$1"
+
+echo
+echo Great work! 🥂
+echo

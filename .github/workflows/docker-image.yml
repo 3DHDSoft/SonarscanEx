@@ -1,0 +1,93 @@
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+# GitHub CLI - https://cli.github.com/manual
+# git tag -a v1.0.0 -m "Version v1.0.0"
+# git push origin --tags
+
+name: Docker Image build
+
+on:
+  # Push
+  push: # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#push
+    # branches: [ main ] # Run the workflow when pushing to the main branch
+    tags:
+      - "v*.*.*"
+
+# Concurrency - https://docs.github.com/en/actions/using-jobs/using-concurrency
+concurrency: #  setting up a concurrency strategy - https://exercism.org/docs/building/github/gha-best-practices#h-consider-setting-up-a-concurrency-strategy
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
+# Env
+env:
+  Repo_Name: "${{ github.event.repository.name }}"
+  Full_Repo_Name: "${{ github.repository }}"
+  Image_Name: "ghcr.io/${{ github.repository }}"
+  GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+  GH_PKG_TOKEN: "${{ secrets.GH_PKG_TOKEN }}"
+  GH_PKG_USER: "${{ vars.GH_PKG_USER }}"
+  GH_EMAIL: "${{ vars.GH_EMAIL }}"
+  Registry: "ghcr.io"
+
+jobs:
+  build:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    permissions: write-all
+      # actions: read
+      # packages: write # Write: Push Docker image
+      # contents: write # Read: actions/checkout; Write: Push changes to GitHub
+    steps:
+      # To Lower case
+      - name: To Lower case
+        run: |
+          # Environment files - https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#environment-files
+          echo "Full_Repo_Name_lc=${Full_Repo_Name,,}" >> ${GITHUB_ENV}
+          echo "Image_Name_lc=${Image_Name,,}" >> ${GITHUB_ENV}
+          echo "GH_PKG_USER_lc=${GH_PKG_USER,,}" >> ${GITHUB_ENV}
+
+      # Checkout
+      - name: Checkout
+        uses: actions/checkout@v4 # https://github.com/actions/checkout
+
+        # Add support for more platforms with QEMU (optional)
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3 # https://github.com/docker/setup-qemu-action
+
+      # Set up Docker Buildx - Export to Github Cache with Docker Buildx - https://mmeendez8.github.io/2021/07/19/new-docker-cache-is-out.html
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3 # https://github.com/docker/setup-buildx-action
+
+      #*************************************
+      # Publishing images to GitHub Packages - https://docs.github.com/en/actions/publishing-packages/publishing-docker-images#publishing-images-to-github-packages
+      #*************************************
+      
+      # Extract metadata
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5 # https://github.com/docker/metadata-action
+        with:
+          images: ${{ env.Image_Name_lc }}
+
+      # Login to GitHub Container Registry
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3 # https://github.com/docker/login-action
+        with:
+          registry: ${{ env.Registry }}/${{ env.GH_PKG_USER_lc }}
+          username: ${{ env.GH_PKG_USER_lc }}
+          password: ${{ env.GH_PKG_TOKEN }}
+
+      # Build and push Docker image
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5 # https://github.com/docker/build-push-action
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: "${{ steps.meta.outputs.labels }}"
+          # Cache management with GitHub Actions - https://docs.docker.com/build/ci/github-actions/cache/#registry-cache
+          # Registry cache - https://docs.docker.com/build/cache/backends/registry
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          # cache-from: type=registry,ref=${{ env.Image_Name_lc }}:buildcache
+          # cache-to: type=registry,ref=${{ env.Image_Name_lc }}:buildcache,mode=max

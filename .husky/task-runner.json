@@ -1,0 +1,90 @@
+{
+  "variables": [
+    {
+      "name": "root-dir",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "dir",
+        "/b"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "name": "dotnet-format",
+      "group": "pre-commit",
+      "command": "dotnet",
+      "args": [
+        "dotnet-format",
+        "--include",
+        "${staged}"
+      ],
+      "include": [
+        "**/*.cs"
+      ]
+    },
+    {
+      "name": "echo staged files",
+      "group": "pre-commit",
+      "pathMode": "absolute",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "echo",
+        "${staged}"
+      ]
+    },
+    {
+      "name": "Clean Up Code",
+      "group": "pre-commit",
+      "command": "jb",
+      "pathMode": "relative",
+      "args": [
+        "cleanupcode",
+        "-p=Built-in: Full Cleanup",
+        "VersionizeEx.sln"
+      ]
+    },
+    {
+      "name": "warning-check",
+      "group": "pre-push",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "/warnaserror"
+      ],
+      "include": [
+        "**/*.cs",
+        "**/*.vb"
+      ]
+    },
+    {
+      "name": "Welcome",
+      "output": "always",
+      "command": "bash",
+      "args": [
+        "-c",
+        "echo Nice work! 🥂"
+      ],
+      "windows": {
+        "command": "cmd",
+        "args": [
+          "/c",
+          "echo Nice work! 🥂"
+        ]
+      }
+    },
+    {
+      "name": "commit-message-linter",
+      "command": "dotnet",
+      "args": [
+        "husky",
+        "exec",
+        ".husky/csx/commit-lint.csx",
+        "--args",
+        "${args}"
+      ]
+    }
+  ]
+}
