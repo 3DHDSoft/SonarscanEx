@@ -19,7 +19,7 @@ dotnet husky install
 git update-index --chmod=+x entrypoint.sh
 ```
 
-## Check permission (it should start with 100755 where [755](https://chmod-calculator.com) are the attributes for an exexutable file):
+## Check permission (it should start with 100755 where [755](https://chmod-calculator.com) are the attributes for an exexutable file)
 
 ```bash
 git ls-files -s entrypoint.sh
