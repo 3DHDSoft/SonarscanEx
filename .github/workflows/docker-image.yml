@@ -86,7 +86,7 @@ jobs:
           labels: "${{ steps.meta.outputs.labels }}"
           # Cache management with GitHub Actions - https://docs.docker.com/build/ci/github-actions/cache/#registry-cache
           # Registry cache - https://docs.docker.com/build/cache/backends/registry
-          # cache-from: type=gha
-          # cache-to: type=gha,mode=max
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           # cache-from: type=registry,ref=${{ env.Image_Name_lc }}:buildcache
           # cache-to: type=registry,ref=${{ env.Image_Name_lc }}:buildcache,mode=max
