@@ -244,7 +244,14 @@ echo "json_data: $json_data"
 
 if [ -z "$json_data" ]; then
   echo "json_data is empty."
-  exit 1
+  exit 0
+fi
+
+# Chech for Not Found message
+message=$(jq -r '.message' <<< "$json_data")
+if [ "$message" == "Not Found" ]; then
+  echo "Message Not Found."
+  exit 0
 fi
 
 # Find check_runs[].name = "SonarCloud Code Analysis" and get 'html_url' field
@@ -253,7 +260,7 @@ echo "html_url: $html_url"
 
 if [ -z "$html_url" ]; then
   echo "html_url is empty."
-  # exit 1
+  exit 0
 fi
 
 echo "html_url=$html_url" >>$GITHUB_OUTPUT
