@@ -226,20 +226,19 @@ fi
 #echo $GH_PKG_TOKEN | gh auth login --with-token
 
 # Get Commit info
-GITHUB_BASEURL=https://api.github.com
-GITHUB_API=repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/check-runs
-echo "GITHUB_BASEURL: $GITHUB_BASEURL"
+GH_BASEURL=https://api.github.com
+echo "GH_BASEURL: $GH_BASEURL"
 echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
 echo "GITHUB_SHA: $GITHUB_SHA"
 echo "GITHUB_API: $GITHUB_API"
 
 echo "gh_sha=$GITHUB_SHA" >>$GITHUB_OUTPUT
 
-# GitHub CLI - Could not get GitHub login working 'gh auth login'
-# json_data=$(gh api $GITHUB_API)
-
 # GitHub API
-json_data=$(curl --get -Ss -H "Authorization: Bearer ${GH_PKG_TOKEN}" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" "${GITHUB_BASEURL}/${GITHUB_API}")
+GH_API=$GH_BASEURL/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/check-runs # GitHub API - https://docs.github.com/en/rest?apiVersion=2022-11-28
+echo "GH_API: $GH_API"
+
+json_data=$(curl --get -Ss -H "Authorization:Bearer ${GH_PKG_TOKEN}" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" "${GH_API}")
 echo "json_data: $json_data"
 
 if [ -z "$json_data" ]; then
