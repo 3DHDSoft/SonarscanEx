@@ -15,7 +15,7 @@ Request secrets from project manager.
 ## GitHub CLI Login
 
 ```powershell
-$Env:GH_PKG_TOKEN | gh auth login --with-token
+$Env:GH_PKG_TOKEN_ORG | gh auth login --with-token
 ```
 
 ## Setup Project
@@ -25,7 +25,7 @@ cd D:\Projects\Util\SonarscanEx
 git remote add origin https://github.com/3DHDSoft/SonarscanEx.git
 git branch -M main
 gh secret set GH_PKG_TOKEN --body "$Env:GH_PKG_TOKEN_ORG" -R 3DHDSoft/SonarscanEx
-gh secret set SONAR_TOKEN --body "$Env:SONAR_TOKEN_VersionizeEx" -R 3DHDSoft/SonarscanEx
+gh secret set SONAR_TOKEN --body "$Env:SONAR_TOKEN_SonarscanEx" -R 3DHDSoft/SonarscanEx
 gh variable set GH_PKG_USER --body "$Env:GH_PKG_USER_ORG" -R 3DHDSoft/SonarscanEx
 gh variable set GIT_EMAIL --body "$Env:Git_Email" -R 3DHDSoft/SonarscanEx
 gh variable set GIT_USERNAME --body "$Env:Git_Username" -R 3DHDSoft/SonarscanEx
