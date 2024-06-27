@@ -11,12 +11,12 @@ using System.Text.RegularExpressions;
 // RegEx Test: https://regex101.com/
 // Regex cookbook - https://medium.com/@fox.jonny/regex-cookbook-most-wanted-regex-aa721558c3c1
 // Lookahead and Lookbehind Zero-Length Assertions - https://www.regular-expressions.info/lookaround.html
-// https://regex101.com/r/zzhtnP/1
+// https://regex101.com/r/9k9uvK/1
 private var conventionalCommitPattern = @"^(?=.{1,90}$)(?:build|feat|ci|chore|docs|fix|perf|refactor|revert|style|test)(?:\(.+\))*(?::).{4,}(?:#\d+)*(?<![\.\s])$";
 
 // Sample commit massage: fix(api): Added new user API
 // Lookahead and Lookbehind Zero-Length Assertions - https://www.regular-expressions.info/lookaround.html
-private var taskPattern = @"[a-z0-9]{9}(?= )"; // https://regex101.com/r/cFYWjO/1
+private var taskPattern = "(?<taskToken>CU-(?<taskId>[a-z0-9]{9}))"; // https://regex101.com/r/W81e5q/1
 
 private var msg = File.ReadAllLines(Args[0])[0];
 

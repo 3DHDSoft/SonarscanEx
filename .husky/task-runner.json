@@ -43,7 +43,7 @@
       "args": [
         "cleanupcode",
         "-p=Built-in: Full Cleanup",
-        "VersionizeEx.sln"
+        "SonarscanEx.sln"
       ]
     },
     {
